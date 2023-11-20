@@ -1,40 +1,21 @@
 package org.bot.listeners;
 
+import net.dv8tion.jda.api.entities.Guild;
 import net.dv8tion.jda.api.events.message.MessageReceivedEvent;
+import net.dv8tion.jda.api.events.session.ReadyEvent;
 import net.dv8tion.jda.api.hooks.ListenerAdapter;
-import org.bot.commands.DeleteReminder;
-import org.bot.commands.SetReminder;
-
-import java.time.LocalDateTime;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
 
 public class MessageListener extends ListenerAdapter {
-    private final SetReminder setReminder;
-    private final DeleteReminder deletereminder;
-
-    public MessageListener(SetReminder setReminder, DeleteReminder deletereminder) {
-        this.setReminder = setReminder;
-        this.deletereminder = deletereminder;
-    }
 
     @Override
-    public void onMessageReceived(MessageReceivedEvent event) {
-        String[] command = event.getMessage().getContentRaw().split(" ", 2);
-
-        if ("!remindme".equals(command[0]) && command.length > 1) {
-            LocalDateTime timeStamp = LocalDateTime.parse(command[1]);
-
-            setReminder.remindMe
-                    (event.getAuthor().getId(), "Reminder: " + command[1], timeStamp, "one-time");
-        } else if ("!reminddaily".equals(command[0]) && command.length > 1) {
-            LocalDateTime timeStamp = LocalDateTime.parse(command[1]);
-
-            setReminder.remindDaily
-                    (event.getAuthor().getId(), "Reminder: " + command[1], timeStamp, "daily-reminder");
-        } else if ("!remindweekly".equals(command[0]) && command.length > 1) {
-            LocalDateTime timeStamp = LocalDateTime.parse(command[1]);
-
-            setReminder.remindWeekly
-                    (event.getAuthor().getId(), "Reminder: " + command[1], timeStamp, "weekly-reminder");
-        }
+    public void onReady(ReadyEvent event) {
+        Guild guild = event.getJDA().getGuildById(588829145211863079L);
+        assert guild != null;
+        guild.upsertCommand("remindme", "one-time reminder")
+                .addOptions(new OptionData(OptionType.STRING, "time", "reminder timer", true),
+                        new OptionData(OptionType.STRING, "message", "reminder note", true))
+                .queue();
     }
 }
