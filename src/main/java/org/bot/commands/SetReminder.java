@@ -1,23 +1,46 @@
 package org.bot.commands;
 
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
-import net.dv8tion.jda.api.hooks.ListenerAdapter;
 import net.dv8tion.jda.api.interactions.commands.OptionMapping;
+import net.dv8tion.jda.api.interactions.commands.OptionType;
+import net.dv8tion.jda.api.interactions.commands.build.OptionData;
+import org.bot.scheduler.ICommand;
 
-public class SetReminder extends ListenerAdapter {
+import java.util.ArrayList;
+import java.util.List;
+
+public class SetReminder implements ICommand {
+
     @Override
-    public void onSlashCommandInteraction(SlashCommandInteractionEvent event) {
-        if (!event.getName().equals("remindme")) return;
+    public String getName() {
+        return "remindme";
+    }
 
-        OptionMapping input1 = event.getOption("timer");
-        assert input1 != null;
-        String option1 = input1.getAsString();
+    @Override
+    public String getDescription() {
+        return "One-time reminder";
+    }
 
-        OptionMapping input2 = event.getOption("message");
-        assert input2 != null;
-        String option2 = input2.getAsString();
+    @Override
+    public List<OptionData> getOptions() {
+        List<OptionData> optionData = new ArrayList<>();
+        optionData.add(new OptionData(OptionType.STRING, "time", "reminder hour", true));
+        optionData.add(new OptionData(OptionType.STRING, "message", "reminder note", true));
 
+        return optionData;
+    }
 
-        event.reply(option1 + option2).queue();
+    @Override
+    public void execute(SlashCommandInteractionEvent event) {
+
+        OptionMapping timer = event.getOption("time");
+        assert timer != null;
+        String option1 = timer.getAsString();
+
+        OptionMapping message = event.getOption("message");
+        assert message != null;
+        String option2 = message.getAsString();
+
+        event.reply("New Reminder: " + option1 + " " + option2).queue();
     }
 }
