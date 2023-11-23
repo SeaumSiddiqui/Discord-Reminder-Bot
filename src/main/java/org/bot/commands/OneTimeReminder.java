@@ -1,5 +1,6 @@
 package org.bot.commands;
 
+import net.dv8tion.jda.api.entities.User;
 import net.dv8tion.jda.api.events.interaction.command.SlashCommandInteractionEvent;
 import net.dv8tion.jda.api.interactions.commands.OptionType;
 import net.dv8tion.jda.api.interactions.commands.build.OptionData;
@@ -34,11 +35,13 @@ public class OneTimeReminder implements ICommand {
 
     @Override
     public void execute(SlashCommandInteractionEvent event) {
+        User user = event.getUser();
         String time = Objects.requireNonNull(event.getOption("time")).getAsString();
         String message = Objects.requireNonNull(event.getOption("message")).getAsString();
 
-        Reminder reminder = new Reminder(time, message);
+        Reminder reminder = new Reminder(user, time, message);
         CommandService service = new CommandService();
+        service.reminders.add(reminder);
         service.scheduleOneTimeReminder(reminder);
 
         event.reply(
