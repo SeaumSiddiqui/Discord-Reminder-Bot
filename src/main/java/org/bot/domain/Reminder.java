@@ -8,6 +8,7 @@ public class Reminder {
     private String message;
 
     public Reminder(User user, String time, String message) {
+        this.user = user;
         this.time = time;
         this.message = message;
     }

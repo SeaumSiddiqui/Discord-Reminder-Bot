@@ -16,19 +16,19 @@ public class OneTimeReminder implements ICommand {
 
     @Override
     public String getName() {
-        return "remindme";
+        return "remindat";
     }
 
     @Override
     public String getDescription() {
-        return "One-time reminder";
+        return "/remindat 10:45PM take a break from coding";
     }
 
     @Override
     public List<OptionData> getOptions() {
         List<OptionData> optionData = new ArrayList<>();
-        optionData.add(new OptionData(OptionType.STRING, "time", "reminder hour", true));
-        optionData.add(new OptionData(OptionType.STRING, "message", "reminder note", true));
+        optionData.add(new OptionData(OptionType.STRING, "time", "set time", true));
+        optionData.add(new OptionData(OptionType.STRING, "message", "short note", true));
 
         return optionData;
     }
@@ -36,7 +36,10 @@ public class OneTimeReminder implements ICommand {
     @Override
     public void execute(SlashCommandInteractionEvent event) {
         User user = event.getUser();
-        String time = Objects.requireNonNull(event.getOption("time")).getAsString();
+        String time = Objects.requireNonNull(event.getOption("time"))
+                .getAsString()
+                .toUpperCase()
+                .replaceAll("\\s", "");
         String message = Objects.requireNonNull(event.getOption("message")).getAsString();
 
         Reminder reminder = new Reminder(user, time, message);

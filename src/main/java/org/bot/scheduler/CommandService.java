@@ -2,44 +2,61 @@ package org.bot.scheduler;
 
 import net.dv8tion.jda.api.entities.User;
 import org.bot.domain.Reminder;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.LocalTime;
+import java.time.ZoneId;
+import java.time.format.DateTimeFormatter;
 import java.util.*;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class CommandService {
     public List<Reminder> reminders;
-    Timer timer;
+    private final Logger logger;
+    private final ScheduledExecutorService scheduler;
 
     public CommandService() {
         this.reminders = new ArrayList<>();
-        this.timer = new Timer();
+        this.logger = LoggerFactory.getLogger(CommandService.class);
+        this.scheduler = Executors.newScheduledThreadPool(1);
     }
 
     public void scheduleOneTimeReminder(Reminder reminder) {
-        Date reminderTime = parseReminderTime(reminder.getTime());
-        TimerTask task = new TimerTask() {
-            @Override
-            public void run() {
-                sendReminder(reminder);
-            }
-        };
-        timer.schedule(task, reminderTime);
+        long delay = parseReminderTime(reminder.getTime());
+
+        scheduler.schedule(()->
+                sendReminder(reminder.getUser(), reminder.getMessage()), delay, TimeUnit.MILLISECONDS);
     }
 
-    public void sendReminder(Reminder reminder) {
-        User user = reminder.getUser();
-        String message = "Reminder: " + reminder.getMessage();
-        user.openPrivateChannel().queue(t-> t.sendMessage(message).queue());
+    public void sendReminder(User user, String message) {
+        user.openPrivateChannel()
+                .queue(
+                        success -> success.sendMessage(message).queue(
+                                messageSuccess -> logger.info("Reminder sent successfully to user {}", user.getId()),
+                                messageError -> logger.error("Error sending message to user " + user.getId(), messageError)
+                        ),
+                        channelError -> logger.error("Error opening private channel for user " + user.getId(), channelError)
+                );
     }
 
-    public Date parseReminderTime(String time) {
-        time = time.toUpperCase().trim();
-        SimpleDateFormat formatter = new SimpleDateFormat("HH:mm");
-        try {
-            return formatter.parse(time);
-        } catch (ParseException e) {
-            throw new IllegalArgumentException("Invalid reminder time format(e): " + time);
+    public static long parseReminderTime(String time) {
+        LocalTime reminderTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("hh:mma"));
+        long currentTime = System.currentTimeMillis();
+
+        long reminder = reminderTime
+                .atDate(LocalDate.now())
+                .atZone(ZoneId.systemDefault())
+                .toInstant()
+                .toEpochMilli();
+
+        if (reminder < currentTime) {
+            reminder += TimeUnit.DAYS.toMillis(1);
+            System.out.println("reminder if not today: " + reminder);
         }
+        return reminder - currentTime;
     }
 }
