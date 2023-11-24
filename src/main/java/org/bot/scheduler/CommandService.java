@@ -32,7 +32,14 @@ public class CommandService {
                 sendReminder(reminder.getUser(), reminder.getMessage()), delay, TimeUnit.MILLISECONDS);
     }
 
-    public void sendReminder(User user, String message) {
+    public void scheduleDailyReminder(Reminder reminder) {
+        long delay = parseReminderTime(reminder.getTime());
+
+        scheduler.scheduleAtFixedRate(()->
+                sendReminder(reminder.getUser(), reminder.getMessage()), delay, 24, TimeUnit.HOURS);
+    }
+
+    private void sendReminder(User user, String message) {
         user.openPrivateChannel()
                 .queue(
                         success -> success.sendMessage(message).queue(
@@ -43,7 +50,7 @@ public class CommandService {
                 );
     }
 
-    public static long parseReminderTime(String time) {
+    private long parseReminderTime(String time) {
         LocalTime reminderTime = LocalTime.parse(time, DateTimeFormatter.ofPattern("hh:mma"));
         long currentTime = System.currentTimeMillis();
 

@@ -12,16 +12,15 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-public class OneTimeReminder implements ICommand {
-
+public class DailyReminder implements ICommand {
     @Override
     public String getName() {
-        return "remindat";
+        return "remindaily";
     }
 
     @Override
     public String getDescription() {
-        return "/remindat 10:45PM meeting";
+        return "/remindaily 9:00AM take a break from coding";
     }
 
     @Override
@@ -46,7 +45,7 @@ public class OneTimeReminder implements ICommand {
         CommandService service = new CommandService();
 
         service.reminders.add(reminder);
-        service.scheduleOneTimeReminder(reminder);
+        service.scheduleDailyReminder(reminder);
 
         event.reply(
                 "Reminder set: " +
