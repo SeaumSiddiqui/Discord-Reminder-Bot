@@ -14,9 +14,7 @@ Before start, make sure you have the following installed:
 ### Installation
 1. Clone repository to your local machine:
    <pre>
-     ```bash
      https://github.com/SeaumSiddiqui/Discord-Reminder-Bot.git
-     ```
    </pre>
 2. Open the project in your IDE
 3. Configure bot token:
