@@ -32,8 +32,8 @@ Before start, make sure you have the following installed:
    
 ## Set a reminder:
    In any text channel, use one of the following commands to set a reminder:
-   1. One-time reminder:
-      This will set a reminder for once
+   * One-time reminder:
+     This will set a reminder for once
       <pre>
         /remindat [time] [message]
       </pre>
@@ -42,8 +42,9 @@ Before start, make sure you have the following installed:
         /remindat 10:30PM meeting
       </pre>
       The bot will send you a reminder after the time specified
-   3. Daily reminder:
-      This will set a reminder for daily
+     
+   * Daily reminder:
+     This will set a reminder for daily
       <pre>
         /remindaily [time] [message]
       </pre>
