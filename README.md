@@ -4,4 +4,65 @@
 This is a simple Discord bot created using Java Discord API (JDA) to help you set and manage reminders within your Discord server.
 
 ## Getting Started
-//will be adding later
+### Prerequisites
+Before start, make sure you have the following installed:
+
+* Java Development Kit (JDK)8 or higher
+* Discord account
+* Discord bot token (create bot here [Discord Developer Portal](https://discord.com/developers/applications "open developer portal"))
+
+### Installation
+1. Clone repository to your local machine:
+   <pre>
+     ```bash
+     https://github.com/SeaumSiddiqui/Discord-Reminder-Bot.git
+     ```
+   </pre>
+2. Open project in your IDE
+3. Configure bot token:
+   Replace YOUR_BOT_TOKEN_HERE in config.properties file with your actual bot token.
+
+## Usage
+### Run the bot:
+   Execute "Main" class to start the bot.
+### Invite the bot to your server:
+   <pre>
+     ```bash
+     https://discord.com/oauth2/authorize?client_id=YOUR_BOT_CLIENT_ID&scope=bot&permissions=YOUR_PERMISSIONS
+     ```
+   </pre>
+   Replace YOUR_BOT_CLIENT_ID and YOUR_PERMISSIONS.
+### Set a reminder:
+   In any text channel, use one of the following commands ot set a reminder:
+   1. One-time reminder:
+      This will set a reminder for once
+      <pre>
+        ```command
+        /remindat [time] [message]
+        ```
+      </pre>
+      For example:
+      <pre>
+        ```command
+        /remindat 10:30PM meeting
+        ```
+      </pre>
+      The bot will send you a reminder after the time specified
+2. Daily reminder:
+   This will set a reminder for daily
+   <pre>
+     ```command
+     /remindaily [time] [message]
+     ```
+   </pre>
+   For example:
+   <pre>
+     ```command
+     /remindaily 05:00PM touch some grass
+     ```
+   </pre>
+   The bot will send you a reminder every day at the specified time
+
+   ## Issues
+   Feel free to [create an issue](https://github.com/SeaumSiddiqui/Discord-Reminder-Bot/issues/new "new issue") if encounter any issues or have suggestions for improvement.
+   
